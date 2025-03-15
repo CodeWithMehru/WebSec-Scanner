@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <meta name="description" content="">
+        <meta name="author" content="">
+
+        <title>WebSec Scanner</title>
+                
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;400;700&family=Unbounded:wght@400;700&display=swap" rel="stylesheet">
+        
+        <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+        <link href="{{ url_for('static', filename='css/bootstrap-icons.css') }}" rel="stylesheet">
+        <link href="{{ url_for('static', filename='css/tooplate-kool-form-pack.css') }}" rel="stylesheet">
+    </head>
+    
+    <body>
+
+        <main>
+
+            <header class="site-header">
+                <div class="container">
+                    <div class="row justify-content-between">
+                        <div class="col-lg-12 col-12 d-flex align-items-center">
+                            <a class="site-header-text d-flex justify-content-center align-items-center me-auto" href="/">
+                                <i class="bi-box"></i>
+                                <span>Code With Mehru</span>
+                            </a>
+
+                            <ul class="social-icon d-flex align-items-center justify-content-end">
+                                <li class="social-icon-item">
+                                    <a href="https://codewithmehru.netlify.app" class="social-icon-link bi-globe"></a>
+                                </li>
+                                <li class="social-icon-item">
+                                    <a href="https://www.instagram.com/code_with_mehru/" class="social-icon-link bi-instagram"></a>
+                                </li>
+                                <li class="social-icon-item">
+                                    <a href="https://github.com/CodeWithMehru" class="social-icon-link bi-github"></a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <section class="hero-section d-flex justify-content-center align-items-center" id="section_1">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-6 col-12 mx-auto">
+                            <small>Secure Your Website Instantly</small>
+                            <h1 class="hero-title">WebSec Scanner</h1>
+                            <p class="countdown-text">
+                                WebSec Scanner is a basic vulnerability scanner that helps you identify and fix vulnerabilities in your website to keep it secure.
+                            </p>
+                            <div class="scanner-box">
+                                <input type="text" id="urlInput" placeholder="Eg: https://codewithmehru.netlify.app" />
+                                <button onclick="startScan()" class="btn-scan">Scan</button>
+                            </div>
+                            <pre id="result"></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="video-wrap">
+                    <video autoplay loop muted class="custom-video">
+                        <source src="{{ url_for('static', filename='videos/video.mp4') }}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+            </section>
+        </main>
+
+        <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/countdown.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/init.js') }}"></script>
+
+        <script>
+            async function startScan() {
+                const url = document.getElementById('urlInput').value;
+                const resultElement = document.getElementById('result');
+
+                if (url) {
+                    resultElement.innerText = 'Scanning...';
+                    const response = await fetch('/scan', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ url })
+                    });
+
+                    const data = await response.json();
+                    if (data.status === 'success') {
+                        resultElement.innerText = data.result;
+                    } else {
+                        resultElement.innerText = `Error: ${data.message}`;
+                    }
+                } else {
+                    resultElement.innerText = 'Please enter a valid URL.';
+                }
+            }
+        </script>
+    </body>
+</html>
